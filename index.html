@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>個人履歷</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9fafb;
+      --white: #ffffff;
+      --text: #111827;
+      --sub: #6b7280;
+      --light: #e5e7eb;
+      --accent: #1d4ed8;
+      --accent2: #3b82f6;
+      --accent-light: #eff6ff;
+      --section-gap: 80px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Helvetica Neue', 'PingFang TC', 'Microsoft JhengHei', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Navbar ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--light);
+    }
+    nav {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.5px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 4px;
+      list-style: none;
+    }
+    .nav-links a {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13.5px;
+      color: var(--sub);
+      text-decoration: none;
+      transition: background .15s, color .15s;
+      white-space: nowrap;
+    }
+    .nav-links a:hover { background: var(--accent-light); color: var(--accent); }
+    .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--sub); border-radius: 2px; }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 120px 24px 80px;
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 56px;
+    }
+    .hero-photo {
+      flex-shrink: 0;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      border: 4px solid var(--accent2);
+      background: var(--light);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .hero-photo-hint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--sub);
+      font-size: 12px;
+      text-align: center;
+    }
+    .hero-photo-hint svg { opacity: 0.35; }
+    .hero-photo:hover .hero-photo-hint { color: var(--accent); }
+    #photoInput { display: none; }
+
+    .hero-info { flex: 1; }
+    .hero-name {
+      font-size: 38px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+    .hero-name-sub {
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--sub);
+      margin-left: 12px;
+    }
+    .hero-affil {
+      margin-top: 10px;
+      font-size: 15px;
+      color: var(--sub);
+    }
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .tag {
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 999px;
+    }
+    .hero-socials {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      align-items: center;
+    }
+    .social-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      border: 1.5px solid var(--light);
+      color: var(--text);
+      background: var(--white);
+      transition: border-color .15s, color .15s;
+    }
+    .social-btn:hover { border-color: var(--accent2); color: var(--accent); }
+
+    /* ── Sections ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    section { padding: var(--section-gap) 0; border-top: 1px solid var(--light); }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 36px;
+    }
+    .section-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--accent-light);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    /* About */
+    .about-text {
+      font-size: 15.5px;
+      color: #374151;
+      max-width: 720px;
+      line-height: 1.9;
+    }
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 24px;
+    }
+
+    /* Timeline */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .tl-item {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 24px;
+      padding-bottom: 32px;
+    }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-left {
+      text-align: right;
+      padding-top: 2px;
+    }
+    .tl-date { font-size: 13px; color: var(--sub); white-space: nowrap; }
+    .tl-right {
+      border-left: 2px solid var(--light);
+      padding-left: 24px;
+      position: relative;
+    }
+    .tl-right::before {
+      content: '';
+      width: 10px;
+      height: 10px;
+      background: var(--accent2);
+      border: 2px solid var(--white);
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px var(--accent2);
+      position: absolute;
+      left: -6px;
+      top: 5px;
+    }
+    .tl-org { font-size: 12px; color: var(--accent); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px; }
+    .tl-role { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .tl-dept { font-size: 13px; color: var(--sub); margin-bottom: 8px; }
+    .tl-desc { font-size: 14px; color: #374151; }
+
+    /* Cards (award / cert) */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: var(--white);
+      border: 1px solid var(--light);
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      transition: box-shadow .15s, border-color .15s;
+    }
+    .card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.06); border-color: var(--accent2); }
+    .card-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .card-badge.gold { background: #fef9c3; }
+    .card-badge.blue { background: var(--accent-light); }
+    .card-badge.green { background: #dcfce7; }
+    .card-badge.purple { background: #f3e8ff; }
+    .card-body { flex: 1; }
+    .card-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .card-meta { font-size: 12.5px; color: var(--sub); }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--light);
+      background: var(--white);
+      text-align: center;
+      padding: 36px 24px;
+      color: var(--sub);
+      font-size: 13px;
+    }
+    footer .foot-socials {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    footer a { color: var(--sub); text-decoration: none; transition: color .15s; }
+    footer a:hover { color: var(--accent); }
+
+    /* Mobile */
+    @media (max-width: 700px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 60px; left: 0; right: 0; background: var(--white); border-bottom: 1px solid var(--light); padding: 12px; gap: 2px; }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      .hero { flex-direction: column; align-items: center; text-align: center; gap: 28px; }
+      .hero-name { font-size: 28px; }
+      .hero-tags { justify-content: center; }
+      .hero-socials { justify-content: center; }
+      .tl-item { grid-template-columns: 1fr; gap: 4px; }
+      .tl-left { text-align: left; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navbar ── -->
+<header>
+  <nav>
+    <a href="#" class="nav-brand">您的姓名</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">關於我</a></li>
+      <li><a href="#education">學歷</a></li>
+      <li><a href="#experience">經歷</a></li>
+      <li><a href="#awards">得獎</a></li>
+      <li><a href="#certs">證照</a></li>
+      <li><a href="#contact">聯絡</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+</header>
+
+<!-- ── Hero ── -->
+<div class="hero">
+  <div class="hero-photo" onclick="document.getElementById('photoInput').click()" title="點擊上傳照片">
+    <img id="photoImg" alt="個人照片" />
+    <div class="hero-photo-hint">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      點擊上傳照片
+    </div>
+  </div>
+  <input type="file" id="photoInput" accept="image/*" />
+
+  <div class="hero-info">
+    <div class="hero-name">
+      您的中文名字
+      <span class="hero-name-sub">Your Name</span>
+    </div>
+    <div class="hero-affil">國立臺北大學 · 資訊管理研究所 · </div>
+    <div class="hero-tags">
+      <span class="tag">SQL</span>
+      <span class="tag">機器學習</span>
+      <span class="tag">數據分析</span>
+    </div>
+    <div class="hero-socials">
+      <a href="mailto:cnh110184@gmail.com" class="social-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        Email
+      </a>
+      <a href="https://linkedin.com/in/yourname" target="_blank" class="social-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://github.com/yourname" target="_blank" class="social-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- ── About ── -->
+<section id="about">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/></svg>
+      </div>
+      <h2 class="section-title">關於我</h2>
+    </div>
+    <p class="about-text">
+      我是一名即將畢業的資訊工程學系學生，對軟體開發與數據分析充滿熱忱。
+      在學期間積極參與專案實作、競賽與實習，具備紮實的程式基礎與良好的團隊協作能力。
+      期望加入能持續學習與成長的工作環境，將所學應用於實際產品，為組織創造價值。
+    </p>
+    <div class="skills-grid">
+      <span class="tag">Python</span>
+      <span class="tag">JavaScript</span>
+      <span class="tag">React</span>
+      <span class="tag">Node.js</span>
+      <span class="tag">SQL / PostgreSQL</span>
+      <span class="tag">Git</span>
+      <span class="tag">機器學習</span>
+      <span class="tag">數據分析</span>
+      <span class="tag">UI/UX 設計</span>
+      <span class="tag">英語溝通</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Education ── -->
+<section id="education">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+      </div>
+      <h2 class="section-title">學歷</h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-date">2024.09 — 2026.06</div>
+        </div>
+        <div class="tl-right">
+          <div class="tl-org">國立臺北大學</div>
+          <div class="tl-role">資訊管理研究所 碩士 </div>
+          <div class="tl-desc">主修資料結構、演算法、機器學習、資料庫系統。擔任系學會學術部長，主辦三次全系讀書會活動。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Experience ── -->
+<section id="experience">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+      </div>
+      <h2 class="section-title">經歷</h2>
+    </div>
+    <div class="timeline">
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-date">2024 夏 · 3 個月</div>
+        </div>
+        <div class="tl-right">
+          <div class="tl-org">某某科技股份有限公司</div>
+          <div class="tl-role">軟體工程實習生</div>
+          <div class="tl-dept">後端開發 · Node.js / PostgreSQL</div>
+          <div class="tl-desc">協助開發 RESTful API，優化資料庫查詢效能使響應時間縮短 30%；撰寫單元測試，覆蓋率提升至 85%。</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-date">2023 — 2024</div>
+        </div>
+        <div class="tl-right">
+          <div class="tl-org">國立某某大學 · 某某實驗室</div>
+          <div class="tl-role">研究助理 · 自然語言處理</div>
+          <div class="tl-dept">指導教授：某某教授</div>
+          <div class="tl-desc">參與中文情感分析研究，使用 BERT fine-tuning 模型，於測試集達到 91.2% F1-score，成果發表於系內研討會。</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-left">
+          <div class="tl-date">2022 — 2023</div>
+        </div>
+        <div class="tl-right">
+          <div class="tl-org">某某新創公司</div>
+          <div class="tl-role">前端開發工讀</div>
+          <div class="tl-dept">React · Tailwind CSS</div>
+          <div class="tl-desc">負責產品官網與後台管理系統前端開發，與設計師及後端工程師密切協作，按期交付三個主要功能模組。</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Awards ── -->
+<section id="awards">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+      </div>
+      <h2 class="section-title">得獎紀錄</h2>
+    </div>
+    <div class="cards-grid">
+
+      <div class="card">
+        <div class="card-badge gold">🥇</div>
+        <div class="card-body">
+          <div class="card-title">全國大學生程式競賽 · 第一名</div>
+          <div class="card-meta">中華民國電腦學會 · 2024 年 11 月</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-badge gold">🏆</div>
+        <div class="card-body">
+          <div class="card-title">某某黑客松 · 優勝獎</div>
+          <div class="card-meta">某某基金會 · 2024 年 4 月 · 48 小時馬拉松</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-badge blue">📄</div>
+        <div class="card-body">
+          <div class="card-title">系所畢業專題競賽 · 佳作</div>
+          <div class="card-meta">國立某某大學資工系 · 2025 年 1 月</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Certifications ── -->
+<section id="certs">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <h2 class="section-title">證照紀錄</h2>
+    </div>
+    <div class="cards-grid">
+
+      <div class="card">
+        <div class="card-badge blue">☁️</div>
+        <div class="card-body">
+          <div class="card-title">AWS Certified Cloud Practitioner</div>
+          <div class="card-meta">Amazon Web Services · 取得：2024 年 8 月 · 效期至 2027 年 8 月</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-badge green">📊</div>
+        <div class="card-body">
+          <div class="card-title">Google Data Analytics Certificate</div>
+          <div class="card-meta">Google · Coursera · 取得：2023 年 12 月</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-badge purple">🌐</div>
+        <div class="card-body">
+          <div class="card-title">TOEIC 多益英語測驗 · 855 分</div>
+          <div class="card-meta">ETS · 取得：2023 年 6 月</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-badge blue">🐍</div>
+        <div class="card-body">
+          <div class="card-title">TQC+ Python 程式語言 · 專業級</div>
+          <div class="card-meta">中華民國電腦技能基金會 · 取得：2022 年 9 月</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── Contact ── -->
+<section id="contact">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <h2 class="section-title">聯絡我</h2>
+    </div>
+    <p style="font-size:15px; color:#374151; margin-bottom:20px;">歡迎透過以下方式聯繫，期待與您交流！</p>
+    <div style="display:flex; flex-direction:column; gap:10px; max-width:360px;">
+      <div style="display:flex; align-items:center; gap:10px; font-size:14px; color:#374151;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        your@email.com
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; font-size:14px; color:#374151;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.92 17z"/></svg>
+        0912-345-678
+      </div>
+      <div style="display:flex; align-items:center; gap:10px; font-size:14px; color:#374151;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        台灣・台北市
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <div class="foot-socials">
+    <a href="https://linkedin.com/in/yourname" target="_blank">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+    </a>
+    <a href="https://github.com/yourname" target="_blank">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+    </a>
+    <a href="mailto:your@email.com">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    </a>
+  </div>
+  <div>Copyright © 您的姓名 2025</div>
+</footer>
+
+<script>
+  // Photo upload
+  document.getElementById('photoInput').addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = document.getElementById('photoImg');
+      img.src = ev.target.result;
+      img.style.display = 'block';
+      document.querySelector('.hero-photo-hint').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.background = a.getAttribute('href') === '#' + current ? 'var(--accent-light)' : '';
+      a.style.color = a.getAttribute('href') === '#' + current ? 'var(--accent)' : '';
+    });
+  });
+
+  // Close mobile nav on link click
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+  });
+</script>
+</body>
+</html>
